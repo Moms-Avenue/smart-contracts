@@ -3,7 +3,7 @@ let ico = artifacts.require("./MomsAvenueCrowdsale.sol");
 let token = artifacts.require("./MomsAvenueToken.sol");
 const BigNumber = web3.BigNumber;
 const decimals = 18;
-const rate = 7500;
+const rate = 8600;
 let start = web3.eth.getBlock(web3.eth.blockNumber).timestamp + 1000;
 let end = start + 7 * (60 * 60 * 24); // 7 days
 let owner;
@@ -29,7 +29,7 @@ contract('MomsAvenueCrowdsale', accounts => {
             {gas: 2000000}
         );
 
-        tokenInstance.approve(icoInstance.address, 11000000 * 10 ** 18);
+        tokenInstance.approve(icoInstance.address, 17200000 * 10 ** 18);
     });
     
     it("test initialization", async() => {

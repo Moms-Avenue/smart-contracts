@@ -40,9 +40,9 @@ contract MomsAvenueCrowdsale {
   MomsAvenueToken public token;
 
   //Tokens per 1 eth
-  uint256 constant public rate = 7500;
+  uint256 constant public rate = 8600;
   
-  uint256 constant public goal = 11000000 * (10 ** 18);
+  uint256 constant public goal = 17200000 * (10 ** 18);
   uint256 public startTime;
   uint256 public endTime;
   uint256 public weiRaised;
