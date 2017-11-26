@@ -26,13 +26,13 @@ function liveDeploy(deployer, accounts) {
     const wallet = "0x591c339c18caf9b37389335e29e753ed4259a868";
     const owner = "0x376c9fde9555e9a491c4cd8597ca67bb1bbf397e";
 
-    deployer.deploy(MomsAvenueToken).then(() => {
+    deployer.deploy(MomsAvenueToken, {gas: 2000000}).then(() => {
         return deployer.deploy(MomsAvenueCrowdsale,
             startTime,
             endTime,
             wallet,
             MomsAvenueToken.address,
             owner
-        )
+        , {gas: 2000000})
     })
 }

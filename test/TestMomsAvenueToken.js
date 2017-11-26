@@ -13,7 +13,7 @@ contract('MomsAvenueToken', accounts => {
         icoAddress = accounts[1];
         investor1 = accounts[2];
         investor2 = accounts[3];
-        instance = await token.new();
+        instance = await token.new({gas: 2000000});
     });
 
     it("test initialization", async () => {

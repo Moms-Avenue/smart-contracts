@@ -1,23 +1,28 @@
-pragma solidity ^0.4.15;
+pragma solidity ^0.4.18;
 
 library SafeMath {
-  function mul(uint256 a, uint256 b) internal constant returns (uint256) {
+  function mul(uint256 a, uint256 b) internal pure returns (uint256) {
+    if (a == 0) {
+      return 0;
+    }
     uint256 c = a * b;
-    assert(a == 0 || c / a == b);
+    assert(c / a == b);
     return c;
   }
 
-  function div(uint256 a, uint256 b) internal constant returns (uint256) {
+  function div(uint256 a, uint256 b) internal pure returns (uint256) {
+    // assert(b > 0); // Solidity automatically throws when dividing by 0
     uint256 c = a / b;
+    // assert(a == b * c + a % b); // There is no case in which this doesn't hold
     return c;
   }
 
-  function sub(uint256 a, uint256 b) internal constant returns (uint256) {
+  function sub(uint256 a, uint256 b) internal pure returns (uint256) {
     assert(b <= a);
     return a - b;
   }
 
-  function add(uint256 a, uint256 b) internal constant returns (uint256) {
+  function add(uint256 a, uint256 b) internal pure returns (uint256) {
     uint256 c = a + b;
     assert(c >= a);
     return c;
@@ -32,13 +37,11 @@ contract StandardToken {
 
   uint256 public totalSupply;
 
-  event Transfer(address indexed from, address indexed to, uint256 value);
-  event Approval(address indexed owner, address indexed spender, uint256 value);
-
-  using SafeMath for uint256;
-
   mapping(address => uint256) balances;
   mapping (address => mapping (address => uint256)) internal allowed;
+
+  event Approval(address indexed owner, address indexed spender, uint256 value);
+  event Transfer(address indexed from, address indexed to, uint256 value);
 
   /**
   * @dev transfer token for a specified address
@@ -61,16 +64,16 @@ contract StandardToken {
   * @param _owner The address to query the the balance of.
   * @return An uint256 representing the amount owned by the passed address.
   */
-  function balanceOf(address _owner) public constant returns (uint256 balance) {
+  function balanceOf(address _owner) public view returns (uint256 balance) {
     return balances[_owner];
   }
 
   /**
-  * @dev Transfer tokens from one address to another
-  * @param _from address The address which you want to send tokens from
-  * @param _to address The address which you want to transfer to
-  * @param _value uint256 the amount of tokens to be transferred
-  */
+   * @dev Transfer tokens from one address to another
+   * @param _from address The address which you want to send tokens from
+   * @param _to address The address which you want to transfer to
+   * @param _value uint256 the amount of tokens to be transferred
+   */
   function transferFrom(address _from, address _to, uint256 _value) public returns (bool) {
     require(_to != address(0));
     require(_value <= balances[_from]);
@@ -84,10 +87,15 @@ contract StandardToken {
   }
 
   /**
-  * @dev Approve the passed address to spend the specified amount of tokens on behalf of msg.sender.
-  * @param _spender The address which will spend the funds.
-  * @param _value The amount of tokens to be spent.
-  */
+   * @dev Approve the passed address to spend the specified amount of tokens on behalf of msg.sender.
+   *
+   * Beware that changing an allowance with this method brings the risk that someone may use both the old
+   * and the new allowance by unfortunate transaction ordering. One possible solution to mitigate this
+   * race condition is to first reduce the spender's allowance to 0 and set the desired value afterwards:
+   * https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729
+   * @param _spender The address which will spend the funds.
+   * @param _value The amount of tokens to be spent.
+   */
   function approve(address _spender, uint256 _value) public returns (bool) {
     allowed[msg.sender][_spender] = _value;
     Approval(msg.sender, _spender, _value);
@@ -95,26 +103,26 @@ contract StandardToken {
   }
 
   /**
-  * @dev Function to check the amount of tokens that an owner allowed to a spender.
-  * @param _owner address The address which owns the funds.
-  * @param _spender address The address which will spend the funds.
-  * @return A uint256 specifying the amount of tokens still available for the spender.
-  */
-  function allowance(address _owner, address _spender) public constant returns (uint256 remaining) {
+   * @dev Function to check the amount of tokens that an owner allowed to a spender.
+   * @param _owner address The address which owns the funds.
+   * @param _spender address The address which will spend the funds.
+   * @return A uint256 specifying the amount of tokens still available for the spender.
+   */
+  function allowance(address _owner, address _spender) public view returns (uint256) {
     return allowed[_owner][_spender];
   }
 }
 
 contract MomsAvenueToken is StandardToken {
 
-  string constant public name = "Moms avenue token";
-  string constant public symbol = "MOM";
-  uint256 constant public decimals = 18;
+  string public constant name = "Moms avenue token";
+  string public constant symbol = "MOM";
+  uint8 public constant decimals = 18;
 
   address public owner;
 
-  uint256 constant public totalSupply = 2200000000 * (10 ** decimals);
-  uint256 constant public lockedAmount = 440000000 * (10 ** decimals);
+  uint256 public constant totalSupply = 2200000000 * (10 ** uint256(decimals));
+  uint256 public constant lockedAmount = 440000000 * (10 ** uint256(decimals));
 
   uint256 public lockReleaseTime;
 

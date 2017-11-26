@@ -1,23 +1,28 @@
-pragma solidity ^0.4.15;
+pragma solidity ^0.4.18;
 
 library SafeMath {
-  function mul(uint256 a, uint256 b) internal constant returns (uint256) {
+  function mul(uint256 a, uint256 b) internal pure returns (uint256) {
+    if (a == 0) {
+      return 0;
+    }
     uint256 c = a * b;
-    assert(a == 0 || c / a == b);
+    assert(c / a == b);
     return c;
   }
 
-  function div(uint256 a, uint256 b) internal constant returns (uint256) {
+  function div(uint256 a, uint256 b) internal pure returns (uint256) {
+    // assert(b > 0); // Solidity automatically throws when dividing by 0
     uint256 c = a / b;
+    // assert(a == b * c + a % b); // There is no case in which this doesn't hold
     return c;
   }
 
-  function sub(uint256 a, uint256 b) internal constant returns (uint256) {
+  function sub(uint256 a, uint256 b) internal pure returns (uint256) {
     assert(b <= a);
     return a - b;
   }
 
-  function add(uint256 a, uint256 b) internal constant returns (uint256) {
+  function add(uint256 a, uint256 b) internal pure returns (uint256) {
     uint256 c = a + b;
     assert(c >= a);
     return c;
@@ -25,7 +30,7 @@ library SafeMath {
 }
 
 contract MomsAvenueToken {
-  function transferFrom(address from, address to, uint256 value) public returns (bool);
+  function transferFrom(address _from, address _to, uint256 _value) public returns (bool);
 }
 
 contract MomsAvenueCrowdsale {
@@ -48,7 +53,7 @@ contract MomsAvenueCrowdsale {
   address public wallet;
   address public tokenOwner;
 
-  mapping(address => uint256) public balanceOf;
+  mapping(address => uint256) balances;
 
   event TokenPurchase(address indexed purchaser, address indexed beneficiary, uint256 value, uint256 amount);
 
@@ -59,7 +64,7 @@ contract MomsAvenueCrowdsale {
     * @param _token Address of the token that will be rewarded for the investors
     * @param _tokenOwner Address of the token owner who can execute restricted functions
     */
-  function MomsAvenueCrowdsale(uint256 _startTime, uint256 _endTime, address _wallet, address _token, address _tokenOwner) {
+  function MomsAvenueCrowdsale(uint256 _startTime, uint256 _endTime, address _wallet, address _token, address _tokenOwner) public {
     require(_startTime < _endTime);
     require(_wallet != address(0));
     require(_token != address(0));
@@ -74,7 +79,7 @@ contract MomsAvenueCrowdsale {
   }
 
   // fallback function can be used to buy tokens
-  function () payable {
+  function () external payable {
     buyTokens(msg.sender);
   }
 
@@ -95,7 +100,7 @@ contract MomsAvenueCrowdsale {
     // update state
     weiRaised = weiRaised.add(weiAmount);
     tokensSold = tokensSold.add(tokens);
-    balanceOf[investor] = balanceOf[investor].add(weiAmount);
+    balances[investor] = balances[investor].add(weiAmount);
 
     assert(token.transferFrom(tokenOwner, investor, tokens));
     TokenPurchase(msg.sender, investor, weiAmount, tokens);
@@ -107,4 +112,13 @@ contract MomsAvenueCrowdsale {
     require(msg.sender == tokenOwner);
     crowdsaleActive = _crowdsaleActive;
   }
+
+  /**
+    * @dev Gets the balance of the specified address.
+    * @param _owner The address to query the the balance of.
+    * @return An uint256 representing the amount owned by the passed address.
+    */
+    function balanceOf(address _owner) external constant returns (uint256 balance) {
+        return balances[_owner];
+    }
 }

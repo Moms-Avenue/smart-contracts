@@ -19,13 +19,14 @@ contract('MomsAvenueCrowdsale', accounts => {
         wallet = accounts[1];
         investor = accounts[2];
         investor2 = accounts[3];
-        tokenInstance = await token.new();
+        tokenInstance = await token.new({gas: 2000000});
         icoInstance = await ico.new(
             start,
             end,
             wallet,
             tokenInstance.address,
-            owner
+            owner,
+            {gas: 2000000}
         );
 
         tokenInstance.approve(icoInstance.address, 11000000 * 10 ** 18);
