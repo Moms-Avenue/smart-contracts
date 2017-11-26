@@ -13,6 +13,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "solc": "^0.4.18",
     "zeppelin-solidity": "^1.2.0"
   }
 }
