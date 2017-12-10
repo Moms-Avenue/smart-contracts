@@ -118,14 +118,14 @@ contract StandardToken {
 
 contract MomsAvenueToken is StandardToken {
 
-    string public constant name = "Moms avenue token";
+    string public constant name = "M.O.M.";
     string public constant symbol = "MOM";
     uint8 public constant decimals = 18;
 
     address public owner;
 
     uint256 public constant totalSupply = 2200000000 * (10 ** uint256(decimals));
-    uint256 public constant lockedAmount = 440000000 * (10 ** uint256(decimals));
+    uint256 public constant lockedAmount = 990000000 * (10 ** uint256(decimals));
 
     uint256 public lockReleaseTime;
 
